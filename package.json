@@ -1,13 +1,16 @@
 {
-  "name": "socketchat",
+  "name": "express-socket.io-chatapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chat app implemented with socket.io and express",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "Raul Neiva",
+    "email": "raulsneiva@gmail.com"
+  },
+  "license": "MIT",
   "dependencies": {
     "express": "^4.16.2",
     "socket.io": "^2.0.4"
