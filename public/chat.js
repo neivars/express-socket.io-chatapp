@@ -26,7 +26,7 @@ let isTyping = false;
 
 messageField.addEventListener('keypress', (ev) => {
     let key = ev.which || ev.keyCode;
-    if (key == 13) {
+    if (key == 13) { // 'Enter' key
         message = {
             username: username,
             message: messageField.value
@@ -66,7 +66,7 @@ socket.on('is typing', (typing) => {
 function postChatMessage(message) {
     // Create a new post element
     let post = document.createElement('div');
-    post.classList = 'post';
+    post.classList = 'post chat-log-entry';
 
     // Create the post children to the post element
     let postUsername = document.createElement('p');
@@ -79,7 +79,22 @@ function postChatMessage(message) {
     postMessage.innerHTML = message.message;
     post.appendChild(postMessage);
 
-    chatLog.appendChild(post);
+    // Get the latest .post from the chatlog entries
+    const postList = document.querySelectorAll('.post');
+    const latestPost = postList[postList.length - 1];
+
+    // If there are no entries in the chatlog latestPost is undefined, just append
+    if (! latestPost) {
+        chatLog.appendChild(post);
+    } else {
+        /* Append the new post after the latestPost (by appending it before the
+        latestPost's next sibling, which is an entry not of type post, like
+        .feedback for instance) */
+        chatLog.insertBefore(post, latestPost.nextSibling);
+    }
+    
+    // Autoscroll down after new content
+    chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 function clearMessageField() {
@@ -88,7 +103,7 @@ function clearMessageField() {
 
 function feedbackIsPosting(typing) {
     let feedback = document.createElement('div');
-    feedback.classList = 'feedback';
+    feedback.classList = 'feedback chat-log-entry';
 
     // Create the feedback text
     let feedbackText = document.createElement('p');
@@ -97,6 +112,9 @@ function feedbackIsPosting(typing) {
     feedback.appendChild(feedbackText);
 
     chatLog.appendChild(feedback);
+
+    // Autoscroll down after new content
+    chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 function clearFeedbacks() {
