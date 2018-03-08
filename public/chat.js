@@ -132,7 +132,7 @@ function feedbackIsPosting(typing) {
 }
 
 function removeFeedback(socketId) {
-    let feedback = document.querySelector(`#typing-feedback-${socketId}`);
+    let feedback = document.getElementById(`typing-feedback-${socketId}`);
     feedback.remove();
 }
 
