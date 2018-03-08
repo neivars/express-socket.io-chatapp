@@ -40,13 +40,20 @@ function chatListeners(socket) {
 
     // User sent chat message up the pipe
     socket.on('chat', (message) => {
-        console.log(message);
+        message.socketId = socket.id;
         socket.broadcast.emit('chat', message);
     });
 
-    // User is typing keys, triggering event up the pipe
+    // User is typing keys.
     socket.on('is typing', (typing) => {
+        typing.socketId = socket.id;
         socket.broadcast.emit('is typing', typing);
+    });
+
+    // User's message field is empty, and therefore no longer typing.
+    socket.on('not typing', (notTyping) => {
+        notTyping.socketId = socket.id;
+        socket.broadcast.emit('not typing', notTyping);
     });
 }
 

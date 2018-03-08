@@ -35,9 +35,17 @@ messageField.addEventListener('keypress', (ev) => {
         socket.emit('chat', message);
         postChatMessage(message);
         clearMessageField();
+    }
+});
+
+messageField.addEventListener('input', (ev) => {
+    if (messageField.value === '') {
+        let notTyping = { username: username };
+        isTyping = false;
+        socket.emit('not typing', notTyping);
     } else {
-        if (! isTyping) {
-            typing = { username: username };
+        if (!isTyping) {
+            let typing = { username: username };
             isTyping = true;
             socket.emit('is typing', typing);
         }
@@ -50,12 +58,16 @@ messageField.addEventListener('keypress', (ev) => {
 // SOCKET EVENT HANDLERS ======================================================
 
 socket.on('chat', (message) => {
-    clearFeedbacks();
+    removeFeedback(message.socketId);
     postChatMessage(message);
 });
 
 socket.on('is typing', (typing) => {
     feedbackIsPosting(typing);
+});
+
+socket.on('not typing', (notTyping) => {
+    removeFeedback(notTyping.socketId);
 });
 
 // ============================================================================
@@ -104,11 +116,12 @@ function clearMessageField() {
 function feedbackIsPosting(typing) {
     let feedback = document.createElement('div');
     feedback.classList = 'feedback chat-log-entry';
+    feedback.id = `typing-feedback-${typing.socketId}`;
 
     // Create the feedback text
     let feedbackText = document.createElement('p');
     feedbackText.classList = 'feedback-text';
-    feedbackText.innerHTML = `<em>${typing.username}</em> is typing...`
+    feedbackText.innerHTML = `<em>${typing.username}</em> is typing...`;
     feedback.appendChild(feedbackText);
 
     chatLog.appendChild(feedback);
@@ -117,9 +130,9 @@ function feedbackIsPosting(typing) {
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
-function clearFeedbacks() {
-    let feedbacks = document.querySelectorAll('.feedback');
-    feedbacks.forEach( feedback => feedback.remove() );
+function removeFeedback(socketId) {
+    let feedback = document.querySelector(`#typing-feedback-${socketId}`);
+    feedback.remove();
 }
 
 // ============================================================================
