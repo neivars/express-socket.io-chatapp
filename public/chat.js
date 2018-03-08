@@ -97,7 +97,8 @@ function postChatMessage(message) {
 
     // If there are no entries in the chatlog latestPost is undefined, just append
     if (! latestPost) {
-        chatLog.appendChild(post);
+        let chatLogRoot = document.getElementById('chat-log-root');
+        chatLog.insertBefore(post, chatLogRoot);
     } else {
         /* Append the new post after the latestPost (by appending it before the
         latestPost's next sibling, which is an entry not of type post, like
